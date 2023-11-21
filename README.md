@@ -1,6 +1,6 @@
 # Intro to RADKit
 
-This repository contains example code that are meant as an introduction to the RADKit API.
+This repository contains examples meant as an introduction to the RADKit API.
 
 The examples are split into multiple sections:
 * RADKit RPC API basics - execute CLI on multiple devices, use REST, Swagger, SNMP,... from the REPL
