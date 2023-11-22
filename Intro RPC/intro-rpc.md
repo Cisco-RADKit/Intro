@@ -1,6 +1,6 @@
 # Introduction to RADKit RPC API
 
-Start radkit-client from a shell, your Windows start menu, Mac Launcher...
+Start radkit-client from a shell, your Windows Start menu, Mac Launcher...
 
 All examples shown are from Linux.
 ```
