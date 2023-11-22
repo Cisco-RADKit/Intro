@@ -417,7 +417,7 @@ Let's put everything together now. Here is a small exercise; the solution is bel
 * Create a list of devices containig `bad-device`, `cat8kv-1`, and `iosv-1`.
 * execute the command `show version` on those devices
 * print the name of each device, along with its version
-* cater for error; do not crash
+* cater for errors; do not crash
  
 ```
 >>> import regex as re
