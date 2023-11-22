@@ -104,7 +104,7 @@ iosv-1             198.18.1.11   IOS            True        False      False   F
 nexus9kv-1         198.18.1.102  NXOS           True        False      False   False      False                  False
 radkit             127.0.0.1     RADKitService  True        False      False   True       False                  False
 ubuntu-1           198.18.1.100  LINUX          True        False      False   False      False                  False
-unreachable-linux  1.1.1.1       LINUX          True        False      True    False      True                   False
+bad-device         1.1.1.2       LINUX          True        False      True    False      True                   False
 
 Untouched inventory from service 0pv7-fat8-09b7.
 
@@ -251,7 +251,7 @@ iosv-1    198.18.1.11   IOS            True        False      False   False     
 # Executing CLI commands
 `DeviceDict` and `Device` both support an `exec()` method. `exec()` allows you to execute commands on a device, without having to worry about password management, the prompt, multi-page output, etc.
 
-## Executing command on a single Device
+## Executing command on a Device
 
 ```
 >>> sv = service.inventory['iosv-1'].exec("show version").wait()
@@ -290,7 +290,10 @@ key       status    identity            service_id      device    device_uuid   
 --------  --------  ------------------  --------------  --------  ------------------------------------  ------------  ----------------------------------------------------------------------------------
 cat8kv-1  SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  cat8kv-1  5db21d2a-50f1-4477-8f06-8109463d14a7  show version  c8000v#show version\nCisco IOS XE Software, Version 17.09.01a\nCisco IOS Softwa...
 iosv-1    SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  iosv-1    fed1abaf-268e-49c2-bcff-fdd3dabc2653  show version  iosv-1#show version\nCisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M... 
+```
 
+The data extracted from the command is in the `Result`, indexed by device name:
+```
 >>> print(sv.result['iosv-1'].data)
 iosv-1#show version
 Cisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M), Version 15.9(3)M6, RELEASE SOFTWARE (fc1)
@@ -302,7 +305,7 @@ Compiled Mon 08-Aug-22 15:22 by mcpre
 
 ## Multiple commands
 
-Multiple commands can be executed in a row on a `Device` or `DeviceDict`. The results are indexed by command.
+Multiple commands can be executed in a row on a `Device` or `DeviceDict`. The results are indexed by device (if a `DeviceDict` is used), then by command.
 
 ```
 >>> show_commands = ios.exec(["show version" , "show ip route"]).wait()
@@ -316,12 +319,125 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 ...
 ```
 
-## Dealing with errors
+# Dealing with errors
 
 RADKit only deals with one type of error: the inability to connect to a device with the chosen protocol. This could be cause by the device being shut down, the IP address or port being unreachable, the credentials may be incorrect, ... If anything prevents RADKit from obtaining data, this will result in an errror.
 
-For instance:
+
+## Failing Device requests
 ```
->>> ls_output = service.inventory['unreachable-linux'].exec("ls -la").wait()
-15:47:55.965Z ERROR | internal | command execution failed [device_name='unreachable-linux' commands=['ls -la'] error="Device action failed: Connection error while preparing connection. Reason: Failed after the configured number of attempts. Last error: [Errno 111] Connect call failed ('1.1.1.1', 22). Attempts=1. Connection timeout=30.0s. Backoff time=2.0s.."]
+>>> ls_output = service.inventory['bad-device'].exec("ls -la").wait()
+15:47:55.965Z ERROR | internal | command execution failed [device_name='bad-device' commands=['ls -la'] error="Device action failed: Connection error while preparing connection. Reason: Failed after the configured number of attempts. Last error: [Errno 111] Connect call failed ('1.1.1.1', 22). Attempts=1. Connection timeout=30.0s. Backoff time=2.0s.."]
+```
+
+The error log is useful to a human user watching the terminal. To programatically verify the status, use the result's `status` field
+```
+>>> ls_output.result.status
+<ExecResultStatus.FAILURE: 'FAILURE'>
+```
+
+The status is an enum of type `ExecResultStatus`, but it also translates into a string.
+
+When a request has faile, the result data is unset and raises an exception if one tries to address it
+```
+>>> ls_output.result.data
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/fdetienn/Documents/Programming/LazyMaestro/LM-Standalone/standalone/cisco_radkit_client/src/radkit_client/sync/from_async/autowrap.py", line 252, in __get__
+    return self.func(obj)
+...
+    self._exception_func()
+  File "/Users/fdetienn/Documents/Programming/LazyMaestro/LM-Standalone/standalone/cisco_radkit_client/src/radkit_client/async_/command.py", line 276, in raise_
+    raise ExecFailedError("command execution failed: %s" % error.error_message)
+radkit_client.async_.command.ExecFailedError: command execution failed: Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].
+```
+
+## Failing multi-command and DeviceDict requests
+
+Let's first create a `DeviceDict` with a failing device:
+```
+>>> ios = service.inventory.subset(["cat8kv-1", "iosv-1", "bad-device"])
+>>> ios
+<radkit_client.sync.device.DeviceDict object at 0x12665b8e0>
+name        host          device_type    Terminal    Netconf    SNMP    Swagger    HTTP    description    failed                   
+----------  ------------  -------------  ----------  ---------  ------  ---------  ------  -------------  --------
+bad-device  1.1.1.2       LINUX          True        False      True    False      True                   True 
+cat8kv-1    198.18.1.101  IOS            True        True       False   False      False                  False
+iosv-1      198.18.1.11   IOS            True        False      False   False      False                  False
+
+3 device(s) from service 0pv7-fat8-09b7.
+```
+
+```
+>>> show_ver = ios.exec("show version").wait()
+07:06:23.678Z ERROR | internal | command execution failed [device_name='bad-device' commands=['show version'] error='Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].']
+```
+
+Notice the request status is `PARTIAL_SUCCESS` as some devices respondes, while others did not
+```
+>>> show_ver
+[PARTIAL_SUCCESS] <radkit_client.sync.request.TransformedFillerRequest object at 0x13003e850>
+----------------  --------------------------------------------------------------------------------
+sent_timestamp    2023-11-22 08:06:22                                                             
+request_type      Command execution                                                               
+client_id         fdetienn@cisco.com                                                              
+service_id        0pv7-fat8-09b7                                                                  
+updates           3 total, 2 succeeded, 1 failed                                                  
+result            {'iosv-1': AsyncExecSingleCommandResult(command='show version', status='SUCCE...
+forwarder         wss://prod.radkit-cloud.cisco.com/forwarder-1/                                  
+e2ee_used         True                                                                            
+compression_used  zstd                                                                            
+----------------  --------------------------------------------------------------------------------
+
+>>> show_ver.status
+<RequestStatus.PARTIAL_SUCCESS: 'PARTIAL_SUCCESS'>
+```
+
+Individual device result status is also available
+```
+>>> show_ver.result
+<radkit_client.sync.command.DeviceToSingleCommandOutputDict object at 0x127d71be0>
+key         status    identity            service_id      device      device_uuid                           command       data                                                                                                                                                                                       
+----------  --------  ------------------  --------------  ----------  ------------------------------------  ------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bad-device  FAILURE   fdetienn@cisco.com  0pv7-fat8-09b7  bad-device  ef9058fc-8b66-4d2e-8cdd-bd01915754ae  show version  ExecFailedError('command execution failed: Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].')
+cat8kv-1    SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  cat8kv-1    5db21d2a-50f1-4477-8f06-8109463d14a7  show version  c8000v#show version\nCisco IOS XE Software, Version 17.09.01a\nCisco IOS Softwa...                                                                                         
+iosv-1      SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  iosv-1      fed1abaf-268e-49c2-bcff-fdd3dabc2653  show version  iosv-1#show version\nCisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M...                                                                                          
+
+>>> show_ver.result['iosv-1'].status
+<ExecResultStatus.SUCCESS: 'SUCCESS'>
+
+>>> show_ver.result['bad-device'].status
+<ExecResultStatus.FAILURE: 'FAILURE'>
+```
+
+# Integration task
+
+Let's put everything together now. Here is a small exercise; the solution is below.
+
+* Create a list of devices containig `bad-device`, `cat8kv-1`, and `iosv-1`.
+* execute the command `show version` on those devices
+* print the name of each device, along with its version
+* cater for error; do not crash
+ 
+```
+>>> import regex as re
+
+>>> # import ExecResultStatus from the radkit_client library to verify status
+>>> from radkit_client import ExecResultStatus
+
+>>> version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
+>>> for name, device_result in show_ver.result.items():
+      if str(device_result.status) != "ExecResultStatus.SUCCESS":
+        print(f"no response from {name}")
+        continue
+    version = version_regex.findall(device_result.data)[0]
+    print(f"{name} -> {version}")
+```
+
+This results in the following output
+```
+iosv-1 -> 15.9(3)M6
+cat8kv-1 -> 17.9.1a
+no response from bad-device
+>>>
 ```
