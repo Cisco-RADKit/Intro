@@ -194,7 +194,7 @@ ubuntu-1  198.18.1.100  LINUX          True        False      False   False     
 1 device(s) from service 0pv7-fat8-09b7.
 ```
 
-This is stil a `DeviceDict`:
+This is still a `DeviceDict`:
 ```
 >>> type(linux)
 <class 'radkit_client.sync.device.DeviceDict'>
