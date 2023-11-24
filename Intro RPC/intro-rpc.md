@@ -45,7 +45,7 @@ Example usage:
 >>>
 ```
 
-# Loggin in
+# Logging in
 
 To connect a RADKit Client to the cloud, authentication is required. Here, we will use `sso_login()` to authenticate the user.
 
