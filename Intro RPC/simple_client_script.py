@@ -25,15 +25,6 @@ linux_versions = linux.exec("uname -a")
 ios_versions.wait()
 linux_versions.wait()
 
-
-version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
-for name, device_result in ios_version.result.items():
-  if device_result.status != ExecResultStatus.SUCCESS:
-    print(f"no response from {name}")
-  continue
-    version = version_regex.findall(device_result.data)[0]
-    print(f"{name} -> {version}")
-
 ios_version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
 for name, device_result in ios_versions.result.items():
   if device_result.status != ExecResultStatus.SUCCESS:
