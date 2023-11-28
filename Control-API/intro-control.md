@@ -70,6 +70,9 @@ from radkit_service.webserver.models.devices import NewDevice
         enabled=True,
     )
 ```
+
+One can easily recognize the various parameters of the NewDevice object, and map them to the Web UI options in the RADKit Service Web UI.
+
 ## Create the device on RADKit Service
 
 To create the device on RADKit Service, use the `create_device()` member function from the `service` object:
@@ -77,4 +80,52 @@ To create the device on RADKit Service, use the `create_device()` member functio
     result = service.create_device(device)
 ```
 
-:warning: the API `create_device()` creates a single device. To create multiple devices in succession, use `create_devices()` (plural) as it is thousands of times more efficient than calling `create_device()` multiple times.
+:warning: the API `create_device()` creates a single device. To create multiple devices in bulk, use `create_devices()` (plural) as it is thousands of times more efficient than calling `create_device()` multiple times.
+
+Now connect to the RADKit Service using `radkit-client` or `radkit-network-console`. `new-device` should be part of the inventory.
+
+## Device and protocols
+
+The device we created above is not terribly useful as it has no defined protocol to collect data. Let's create a new device, this time with SSH and REST APIs.
+
+We need to define terminal and HTTP-based API parameters; this is done with the `NewTerminal` and `NewHTTP` objects. Let's import their definition:
+```python
+from radkit_service.webserver.models.devices import NewTerminal, NewHTTP
+```
+
+Define terminal parameters:
+```python
+  terminal = NewTerminal(
+    username="admin",
+    password="Cisco123",
+  )
+```
+
+Define HTTP parameters:
+```python
+  http = NewHTTP(
+    username="admin",
+    password="Cisco123",
+    verify=False, # do not very the device certificate (self-signed)
+  )
+```
+
+Again, the parameters are the same as those exposed in the WebUI.
+
+We can create a `NewDevice` object, and attach the `NewTerminal` and `NewHTTP` objects to it:
+
+```python
+    device_ssh_rest = NewDevice(
+        name="new-device-2",
+        host="10.0.0.2",
+        deviceType="IOS",
+        enabled=True,
+        terminal=terminal,
+        http=http,
+    )
+```
+Finally, the device can be created:
+```python
+    result = service.create_device(device)
+```
+
