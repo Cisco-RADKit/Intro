@@ -29,15 +29,15 @@ ios_version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
 for name, device_result in ios_versions.result.items():
   if device_result.status != ExecResultStatus.SUCCESS:
     print(f"no response from {name}")
-  continue
-    version = ios_version_regex.findall(device_result.data)[0]
-    print(f"{name} -> {version}")
+    continue
+  version = ios_version_regex.findall(device_result.data)[0]
+  print(f"{name} -> {version}")
 
 linux_version_regex = re.compile("Version\s+(\S+):", flags=re.DOTALL)
 for name, device_result in linux_versions.result.items():
   if device_result.status != ExecResultStatus.SUCCESS:
     print(f"no response from {name}")
-  continue
-    version = linux_version_regex.findall(device_result.data)[0]
-    print(f"{name} -> {version}")
+    continue
+  version = linux_version_regex.findall(device_result.data)[0]
+  print(f"{name} -> {version}")
 
