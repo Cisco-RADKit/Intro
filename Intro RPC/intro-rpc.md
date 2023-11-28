@@ -427,7 +427,7 @@ Let's put everything together now. Here is a small exercise; the solution is bel
 
 >>> version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
 >>> for name, device_result in show_ver.result.items():
-      if str(device_result.status) != "ExecResultStatus.SUCCESS":
+      if device_result.status != ExecResultStatus.SUCCESS:
         print(f"no response from {name}")
         continue
     version = version_regex.findall(device_result.data)[0]
