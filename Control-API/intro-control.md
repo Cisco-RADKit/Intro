@@ -11,32 +11,56 @@ It is possible to expose the Control API to remote users, but this is out of the
 
 :warning: In this document, we will use object names Service, Device, ... The names are the same as the RPC equivalent object as they represent the same underlying entity. It is important to realize however that the methods available on the Control API objects are completely different from the equivalen RPC API objects. The Control API objects are meant to manage the RADKit Service, while the RPC API objects are meant to query the physical devices.
 
+## Admin credentials
+
+:warning: it is **VERY BAD SECURITY PRACTICE** to store passwords in your scripts and automations. One mistake, and those passwords end up in a public GIT repository, or on an online backup, for any attacker to harvest.
+
+We will instead request the user to provide the administrator password
+```python
+from getpass import getpass
+password = getpass("superadmin password: ")
+```
+
+
 ## Connecting to a RADKit Service Control API
 
 The first thing to do is to create a Python context offering an authenticated connection to RADKit Service.
 
 For the purpose of this exercise, we need a RADKit Service - you can create one on your own computer; it will be accessible on `localhost:8081`. Since this vanilla RADKit Service is likely fitted with default self-signed certificates, certificate validation must be omitted.
-We can achieve that by creating an ssl context using `create_public_ssl_context()`:
+
+We can achieve that by creating an ssl context using `create_public_ssl_context()`, which we need to import first:
+```python
+from radkit_common.utils.ssl import create_public_ssl_context
+```
+
+Let's define a `verify` variable from `create_public_ssl_context`:
 ```python
 verify = create_public_ssl_context(verify=False, use_obsolete_ciphers=False)
 ```
 
-The context can now be created:
+We need a ControlAPIcontext, let's import it first
 ```python
-password = getpass("superadmin password: ")
+from radkit_service.control_api import ControlAPI
+```
+
+And now let's create a context called `service`using the `ControlAPI` in a context manager construct:
+```python
 with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="superadmin", admin_password=password, http_client_kwargs=dict(verify=verify)) as service:
 ```
 
 The above context will authenticate as `superadmin` on the RADKit service running on your local computer (`localhost`).
 
-:warning: it is **VERY BAD SECURITY PRACTICE** to store passwords in your scripts and automations. One mistake, and those passwords end up in a public GIT repository, or on an online backup, for any attacker to harvest.
-
-## Create a device object
+## Create a device object in memory
 Now let's create a device representation in memory (object). From a Control API standpoint, a device is a JSON object. However, RADKit offers pydantic equivalent, allowing you to code more efficiently, and safely.
 
 If you are unfamiliar with Pydantic, visit https://pydantic.dev.
 
 In a nutshell, Pydantic offers Python object representations similar to a Pyhthon Data Classes or a C struct. In addition, at creation time, Pydantic will validate and make sure the data matches the expected format for each field.
+
+For this, we need to import the Device models:
+```python
+from radkit_service.webserver.models.devices import NewDevice
+```
 
 ```python
     device = NewDevice(
@@ -53,4 +77,4 @@ To create the device on RADKit Service, use the `create_device()` member functio
     result = service.create_device(device)
 ```
 
-
+:warning: the API `create_device()` creates a single device. To create multiple devices in succession, use `create_devices()` (plural) as it is thousands of times more efficient than calling `create_device()` multiple times.
