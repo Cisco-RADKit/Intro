@@ -30,7 +30,7 @@ All examples shown are from Linux.
  └─────────────────────────────────────────────────────────────────────────────────────────────────────┘
 11:11:42.242Z INFO  | internal | CXD object created without authentication set, call `<this object>.authenticate()` to set authentication.
 Running startup script(s):
-- /Users/fdetienn/.radkit/client/profile.py
+- /<home directory>/.radkit/client/profile.py
 
 
 Example usage:
@@ -50,7 +50,7 @@ Example usage:
 To connect a RADKit Client to the cloud, authentication is required. Here, we will use `sso_login()` to authenticate the user.
 
 ```
->>> client = sso_login("fdetienn@cisco.com")
+>>> client = sso_login("<your_cco_id@domain.com>")
 
 A browser window was opened to continue the authentication process. Please follow the instructions there.
 
@@ -127,7 +127,7 @@ AsyncDevice(name='ubuntu-1', service_display_name='ubuntu-1', host='198.18.1.100
 
 Object parameters
 --------------------  ------------------
-identity              fdetienn@cisco.com
+identity              your_cco_id@domain.com
 serial                None              
 name                  ubuntu-1          
 service_display_name  ubuntu-1          
@@ -288,8 +288,8 @@ The results are indexed by `Device` name
 <radkit_client.sync.command.DeviceToSingleCommandOutputDict object at 0x1225991c0>
 key       status    identity            service_id      device    device_uuid                           command       data                                                                                              
 --------  --------  ------------------  --------------  --------  ------------------------------------  ------------  ----------------------------------------------------------------------------------
-cat8kv-1  SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  cat8kv-1  5db21d2a-50f1-4477-8f06-8109463d14a7  show version  c8000v#show version\nCisco IOS XE Software, Version 17.09.01a\nCisco IOS Softwa...
-iosv-1    SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  iosv-1    fed1abaf-268e-49c2-bcff-fdd3dabc2653  show version  iosv-1#show version\nCisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M... 
+cat8kv-1  SUCCESS   your_cco_id@domain.com  0pv7-fat8-09b7  cat8kv-1  5db21d2a-50f1-4477-8f06-8109463d14a7  show version  c8000v#show version\nCisco IOS XE Software, Version 17.09.01a\nCisco IOS Softwa...
+iosv-1    SUCCESS   your_cco_id@domain.com  0pv7-fat8-09b7  iosv-1    fed1abaf-268e-49c2-bcff-fdd3dabc2653  show version  iosv-1#show version\nCisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M... 
 ```
 
 The data extracted from the command is in the `Result`, indexed by device name:
@@ -343,11 +343,11 @@ When a request has faile, the result data is unset and raises an exception if on
 >>> ls_output.result.data
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "/Users/fdetienn/Documents/Programming/LazyMaestro/LM-Standalone/standalone/cisco_radkit_client/src/radkit_client/sync/from_async/autowrap.py", line 252, in __get__
+  File ".../sync/from_async/autowrap.py", line 252, in __get__
     return self.func(obj)
 ...
     self._exception_func()
-  File "/Users/fdetienn/Documents/Programming/LazyMaestro/LM-Standalone/standalone/cisco_radkit_client/src/radkit_client/async_/command.py", line 276, in raise_
+  File ".../async_/command.py", line 276, in raise_
     raise ExecFailedError("command execution failed: %s" % error.error_message)
 radkit_client.async_.command.ExecFailedError: command execution failed: Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].
 ```
@@ -380,7 +380,7 @@ Notice the request status is `PARTIAL_SUCCESS` as some devices respondes, while 
 ----------------  --------------------------------------------------------------------------------
 sent_timestamp    2023-11-22 08:06:22                                                             
 request_type      Command execution                                                               
-client_id         fdetienn@cisco.com                                                              
+client_id         your_cco_id@domain.com                                                              
 service_id        0pv7-fat8-09b7                                                                  
 updates           3 total, 2 succeeded, 1 failed                                                  
 result            {'iosv-1': AsyncExecSingleCommandResult(command='show version', status='SUCCE...
@@ -399,9 +399,9 @@ Individual device result status is also available
 <radkit_client.sync.command.DeviceToSingleCommandOutputDict object at 0x127d71be0>
 key         status    identity            service_id      device      device_uuid                           command       data                                                                                                                                                                                       
 ----------  --------  ------------------  --------------  ----------  ------------------------------------  ------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bad-device  FAILURE   fdetienn@cisco.com  0pv7-fat8-09b7  bad-device  ef9058fc-8b66-4d2e-8cdd-bd01915754ae  show version  ExecFailedError('command execution failed: Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].')
-cat8kv-1    SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  cat8kv-1    5db21d2a-50f1-4477-8f06-8109463d14a7  show version  c8000v#show version\nCisco IOS XE Software, Version 17.09.01a\nCisco IOS Softwa...                                                                                         
-iosv-1      SUCCESS   fdetienn@cisco.com  0pv7-fat8-09b7  iosv-1      fed1abaf-268e-49c2-bcff-fdd3dabc2653  show version  iosv-1#show version\nCisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M...                                                                                          
+bad-device  FAILURE   your_cco_id@domain.com  0pv7-fat8-09b7  bad-device  ef9058fc-8b66-4d2e-8cdd-bd01915754ae  show version  ExecFailedError('command execution failed: Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].')
+cat8kv-1    SUCCESS   your_cco_id@domain.com  0pv7-fat8-09b7  cat8kv-1    5db21d2a-50f1-4477-8f06-8109463d14a7  show version  c8000v#show version\nCisco IOS XE Software, Version 17.09.01a\nCisco IOS Softwa...                                                                                         
+iosv-1      SUCCESS   your_cco_id@domain.com  0pv7-fat8-09b7  iosv-1      fed1abaf-268e-49c2-bcff-fdd3dabc2653  show version  iosv-1#show version\nCisco IOS Software, IOSv Software (VIOS-ADVENTERPRISEK9-M...                                                                                          
 
 >>> show_ver.result['iosv-1'].status
 <ExecResultStatus.SUCCESS: 'SUCCESS'>
