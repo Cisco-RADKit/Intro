@@ -19,7 +19,7 @@ linux = service.inventory.filter("device_type", "LINUX")
 
 # Queue some commands
 ios_versions = ios.exec("show version")
-linux_versions = linux.exec("uname -a")
+linux_versions = linux.exec("cat /etc/os-release")
 
 # Now wait for command completion on both Linux and IOS
 ios_versions.wait()
@@ -28,16 +28,16 @@ linux_versions.wait()
 ios_version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
 for name, device_result in ios_versions.result.items():
   if device_result.status != ExecResultStatus.SUCCESS:
-    print(f"no response from {name}")
-    continue
-  version = ios_version_regex.findall(device_result.data)[0]
+    version = "(no response from device)"
+  else:
+    version = ios_version_regex.findall(device_result.data)[0]
   print(f"{name} -> {version}")
 
-linux_version_regex = re.compile("Version\s+(\S+):", flags=re.DOTALL)
+linux_version_regex = re.compile('VERSION="([^"]+)"', flags=re.DOTALL)
 for name, device_result in linux_versions.result.items():
   if device_result.status != ExecResultStatus.SUCCESS:
-    print(f"no response from {name}")
-    continue
-  version = linux_version_regex.findall(device_result.data)[0]
+    version = "(no response from device)"
+  else:
+    version = linux_version_regex.findall(device_result.data)[0]
   print(f"{name} -> {version}")
 
