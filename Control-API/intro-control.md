@@ -63,12 +63,12 @@ from radkit_service.webserver.models.devices import NewDevice
 ```
 
 ```python
-    device = NewDevice(
-        name="new-device",
-        host="10.0.0.1",
-        deviceType="IOS",
-        enabled=True,
-    )
+  device = NewDevice(
+    name="new-device",
+    host="10.0.0.1",
+    deviceType="IOS",
+    enabled=True,
+  )
 ```
 
 One can easily recognize the various parameters of the NewDevice object, and map them to the Web UI options in the RADKit Service Web UI.
@@ -77,7 +77,7 @@ One can easily recognize the various parameters of the NewDevice object, and map
 
 To create the device on RADKit Service, use the `create_device()` member function from the `service` object:
 ```python
-    result = service.create_device(device)
+  result = service.create_device(device)
 ```
 
 :warning: the API `create_device()` creates a single device. To create multiple devices in bulk, use `create_devices()` (plural) as it is thousands of times more efficient than calling `create_device()` multiple times.
@@ -115,17 +115,34 @@ Again, the parameters are the same as those exposed in the WebUI.
 We can create a `NewDevice` object, and attach the `NewTerminal` and `NewHTTP` objects to it:
 
 ```python
-    device_ssh_rest = NewDevice(
-        name="new-device-2",
-        host="10.0.0.2",
-        deviceType="IOS",
-        enabled=True,
-        terminal=terminal,
-        http=http,
-    )
+  device_ssh_rest = NewDevice(
+    name="new-device-2",
+    host="10.0.0.2",
+    deviceType="IOS",
+    enabled=True,
+    terminal=terminal,
+    http=http,
+  )
 ```
 Finally, the device can be created:
 ```python
     result = service.create_device(device)
 ```
 
+## Creating multiple devices
+
+To create multiple devices, create a list of `NewDevice` and use the `create_devices()` method from the `service` context.
+
+```python
+  device_list = []
+
+  for i in range(10):
+    device = NewDevice(
+      name=f"new-device-{i}",
+      host=f"10.0.0.{i+10}",
+      deviceType="IOS",
+      enabled=True,
+    )
+    device_list.append(device)
+  service.create_devices(device_list)
+```
