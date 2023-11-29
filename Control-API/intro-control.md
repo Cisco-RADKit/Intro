@@ -168,9 +168,9 @@ When devices are created they get assigned a UUID (an internal unique identifier
 ```python
 >>> result.results[0].root.dict()
 {'success': True, 'result': {'uuid': UUID('7a1c3ad9-9ff1-4faa-bcc5-815f828d62d4'), 'name': 'new-device-0', 'host': '10.0.0.1', 'deviceType': <DeviceType.IOS: 'IOS'>, 'description': '', 'labels': frozenset(), 'jumphostUuid': None, 'sourceKey': None, 'sourceDevUuid': None, 'metaData': [], 'enabled': True, 'terminal': None, 'netconf': None, 'snmp': None, 'swagger': None, 'http': None, 'forwardedTcpPorts': ''}}
->>> result2.results[9].root.success
+>>> result.results[9].root.success
 True
->>> result2.results[9].root.result.uuid
+>>> result.results[9].root.result.uuid
 UUID("7a1c3ad9-9ff1-4faa-bcc5-815f828d62d4")
 ```
 
