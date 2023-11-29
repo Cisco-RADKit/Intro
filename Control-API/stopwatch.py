@@ -1,8 +1,9 @@
-#!/usr/bin/env python
-
 from typing import Optional
-
 from time import time
+
+'''
+A naive stopwatch class.
+'''
 
 class StopWatch:
     def __init__(self):
