@@ -74,7 +74,7 @@ The API `sso_login("<email address>")` initializes the connection and triggers a
 
 The Client object has a method called `service()` to trigger the end-to-end connection with a service identified by a Service ID.
 ```
->>> service = client.service("0pv7-fat8-09b7")
+>>> service = client.service("f1e9-hfpd-21ya")
 11:18:37.923Z INFO  | internal | Connecting to forwarder [uri='wss://prod.radkit-cloud.cisco.com/forwarder-4/websocket/']
 11:18:38.913Z INFO  | internal | Connection to forwarder successful [uri='wss://prod.radkit-cloud.cisco.com/forwarder-4/websocket/']
 11:18:39.197Z INFO  | internal | Connecting to forwarder [uri='wss://prod.radkit-cloud.cisco.com/forwarder-1/websocket/']
@@ -90,6 +90,7 @@ The resulting object is of type `Service` and is stored into a variable called `
 
 The Client object can connect to multiple services. Each instance of a Service object can be stored into a separate variable (e.g. dedicated service objects for each customer environment and/or lab setup).
 
+For example:
 ```
 >>> lab_service = client.service("1234-abcd-wxyz")
 >>> prod_service = client.service("abcd-efgh-1234")
