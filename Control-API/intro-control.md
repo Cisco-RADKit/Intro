@@ -139,10 +139,53 @@ To create multiple devices, create a list of `NewDevice` and use the `create_dev
   for i in range(10):
     device = NewDevice(
       name=f"new-device-{i}",
-      host=f"10.0.0.{i+10}",
+      host=f"10.0.0.{i+1}",
       deviceType="IOS",
       enabled=True,
     )
     device_list.append(device)
-  service.create_devices(device_list)
+  result = service.create_devices(device_list)
 ```
+
+# Analyzing results
+
+The result from `create_device()` contains several interesting elements:
+
+`result.success` is `False` if any device cannot be created:
+```python
+>>> result.success
+True
+```
+
+`result.success_count` gives a count of how many devices have been actually created.
+```python
+>>> result.success_count
+10
+```
+
+When devices are created they get assigned a UUID (an internal unique identifier) by RADKit Service. The status of each device is in `result.results`which is an array with one entry per device:
+
+```python
+>>> result.results[0].root.dict()
+{'success': True, 'result': {'uuid': UUID('7a1c3ad9-9ff1-4faa-bcc5-815f828d62d4'), 'name': 'new-device-0', 'host': '10.0.0.1', 'deviceType': <DeviceType.IOS: 'IOS'>, 'description': '', 'labels': frozenset(), 'jumphostUuid': None, 'sourceKey': None, 'sourceDevUuid': None, 'metaData': [], 'enabled': True, 'terminal': None, 'netconf': None, 'snmp': None, 'swagger': None, 'http': None, 'forwardedTcpPorts': ''}}
+>>> result2.results[9].root.success
+True
+>>> result2.results[9].root.result.uuid
+UUID("7a1c3ad9-9ff1-4faa-bcc5-815f828d62d4")
+```
+
+In case of failure, `success`would be false for the specific device, and the message string would contain the reason for failure of that specific device:
+```python
+>>> result.results[0].root.dict()
+{
+    "success": False,
+    "message": '1 validation error for Device name "new-device-5" already exists\nname\n  Device name "new-device-5" already exists [type=value_error, input_value=\'\', input_type=str]',
+    "detail": {"uuid": None, "name": "new-device-5", "host": "10.0.0.10", "deviceType": "IOS"},
+}
+>>> result.results[0].root.message
+'1 validation error for Device name "new-device-0" already exists\nname\n  Device name "new-device-0" already exists [type=value_error, input_value=\'\', input_type=str]'
+```
+
+
+
+
