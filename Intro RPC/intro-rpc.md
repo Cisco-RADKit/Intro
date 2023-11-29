@@ -58,6 +58,11 @@ Authentication result received.
 >>>
 ```
 
+If you need to display the SSO URL generated for this authentication request and copy/paste it manually into the browser you can use this command:
+```
+>>> client = sso_login("<your_cco_id@domain.com>" open_browser = False)
+```
+
 The API `sso_login("<email address>")` initializes the connection and triggers authentication. It returns an object of type Client. In the example above, we save the return object into a variable names `client`
 ```
 >>> type(client)
@@ -82,6 +87,16 @@ The resulting object is of type `Service` and is stored into a variable called `
 >>> type(service)
 <class 'radkit_client.sync.service.Service'>
 ```
+
+The Client object can connect to multiple services. Each instance of a Service object can be stored into a separate variable (e.g. dedicated service objects for each customer environment and/or lab setup).
+
+```
+>>> lab_service = client.service("1234-abcd-wxyz")
+>>> prod_service = client.service("abcd-efgh-1234")
+>>> customerA = client.service("xxxx-yyyy-zzzz")
+>>> customerB = client.service("aaaa-bbbb-cccc")
+```
+
 
 # The service inventory DeviceDict
 
