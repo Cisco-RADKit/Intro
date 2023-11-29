@@ -11,7 +11,6 @@ from radkit_common.utils.formatting import to_canonical_name
 from stopwatch import StopWatch
 
 password = getpass()
-#password = "Cisco123!!!"
 
 verify = create_public_ssl_context(verify=False, use_obsolete_ciphers=False)
 
@@ -19,23 +18,18 @@ with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="sup
     stopwatch = StopWatch()
 
     devices = []
-    for i in range(20000):
-        hostname = f"new test-device_{i}"
-        canonical_name = to_canonical_name(hostname)
+    for i in range(10):
+        hostname = f"new-test-device-{i}"
         terminal = NewTerminal(
             username="admin",
             password="Cisco123",
         )
-        # metadata = [
-        #     MetaDataEntry(key="original-hostname", value=hostname),
-        #     MetaDataEntry(key="index", value=str(i))
-        # ]
+
         device = NewDevice(
-            name=canonical_name,
-            host=f"2.{floor(i/(256*256))}.{floor(i/256)}.{i%256}",
+            name=hostname,
+            host=f"10.0.{floor(i/254)}.{i%254+1}",
             deviceType="IOS",
             terminal=terminal,
-            # metaData=metadata,
             enabled=True,
         )
         devices.append(device)
@@ -44,4 +38,12 @@ with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="sup
     stopwatch.start()
     result = service.create_devices(devices)
     stopwatch.stop()
-    stopwatch.print_delta(f"devices created in ")
+    stopwatch.print_delta(f"Operation completed in ")
+    print(f"{result.success_count} devices were created")
+
+    # print failure messages
+    for r in result.results:
+        if r.__root__.success == False:
+            print(f"Could not create {r.__root__.detail['name']}")
+            print(r.__root__.message)
+            print()

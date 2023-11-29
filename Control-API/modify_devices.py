@@ -31,4 +31,4 @@ with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="sup
     stopwatch.start()
     service.update_devices(devices)
     stopwatch.stop()
-    stopwatch.print_delta("devices modified in ")
+    stopwatch.print_delta(f"Operation completed in ")

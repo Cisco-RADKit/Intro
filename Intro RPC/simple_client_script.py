@@ -11,7 +11,7 @@ user_id = input("Enter your CCO user id: ")
 service_id = input("Enter the service id: ")
 
 client = sso_login(user_id)
-service = service=client.service(service_id).wait()
+service = client.service(service_id).wait()
 
 # select IOS and Linux devices
 ios = service.inventory.filter("device_type", "IOS")
