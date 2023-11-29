@@ -134,17 +134,18 @@ Finally, the device can be created:
 To create multiple devices, create a list of `NewDevice` and use the `create_devices()` method from the `service` context.
 
 ```python
-  device_list = []
+device_list = []
 
-  for i in range(10):
+for i in range(10):
     device = NewDevice(
-      name=f"new-device-{i}",
-      host=f"10.0.0.{i+1}",
-      deviceType="IOS",
-      enabled=True,
+    name=f"new-device-{i}",
+    host=f"10.0.0.{i+1}",
+    deviceType="IOS",
+    enabled=True,
     )
     device_list.append(device)
-  result = service.create_devices(device_list)
+
+result = service.create_devices(device_list)
 ```
 
 # Analyzing results
