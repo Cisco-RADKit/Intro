@@ -55,7 +55,7 @@ Now let's create a device representation in memory (object). From a Control API 
 
 If you are unfamiliar with Pydantic, visit https://pydantic.dev.
 
-In a nutshell, Pydantic offers Python object representations similar to a Pyhthon Data Classes or a C struct. In addition, at creation time, Pydantic will validate and make sure the data matches the expected format for each field.
+In a nutshell, Pydantic offers Python object representations similar to a Python Data Classes or a C struct. In addition, at creation time, Pydantic will validate and make sure the data matches the expected format for each field.
 
 For this, we need to import the Device models:
 ```python

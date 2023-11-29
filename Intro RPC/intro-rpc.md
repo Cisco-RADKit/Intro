@@ -336,7 +336,7 @@ Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
 
 # Dealing with errors
 
-RADKit only deals with one type of error: the inability to connect to a device with the chosen protocol. This could be cause by the device being shut down, the IP address or port being unreachable, the credentials may be incorrect, ... If anything prevents RADKit from obtaining data, this will result in an errror.
+RADKit only deals with one type of error: the inability to connect to a device with the chosen protocol. This could be caused by the device being shut down, the IP address or port being unreachable, the credentials may be incorrect, ... If anything prevents RADKit from obtaining data, this will result in an errror.
 
 
 ## Failing Device requests
@@ -353,7 +353,7 @@ The error log is useful to a human user watching the terminal. To programaticall
 
 The status is an enum of type `ExecResultStatus`, but it also translates into a string.
 
-When a request has faile, the result data is unset and raises an exception if one tries to address it
+When a request has failed, the result data is unset and raises an exception if one tries to address it
 ```
 >>> ls_output.result.data
 Traceback (most recent call last):
@@ -388,7 +388,7 @@ iosv-1      198.18.1.11   IOS            True        False      False   False   
 07:06:23.678Z ERROR | internal | command execution failed [device_name='bad-device' commands=['show version'] error='Device action failed: Connection error while preparing connection. Reason: OS error: No route to host [bad-device@1.1.1.2:22].']
 ```
 
-Notice the request status is `PARTIAL_SUCCESS` as some devices respondes, while others did not
+Notice the request status is `PARTIAL_SUCCESS` as some devices responded, while others did not
 ```
 >>> show_ver
 [PARTIAL_SUCCESS] <radkit_client.sync.request.TransformedFillerRequest object at 0x13003e850>
