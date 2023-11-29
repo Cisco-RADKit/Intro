@@ -186,6 +186,54 @@ In case of failure, `success`would be false for the specific device, and the mes
 '1 validation error for Device name "new-device-0" already exists\nname\n  Device name "new-device-0" already exists [type=value_error, input_value=\'\', input_type=str]'
 ```
 
+## Putting it all together
 
+```python
+#!/usr/bin/env python
 
+from getpass import getpass
+from math import floor
 
+from radkit_common.utils.ssl import create_public_ssl_context
+from radkit_service.control_api import ControlAPI
+from radkit_service.webserver.models.devices import MetaDataEntry, NewDevice, NewTerminal #, StoredDevice
+from radkit_common.utils.formatting import to_canonical_name
+
+password = getpass()
+
+verify = create_public_ssl_context(verify=False, use_obsolete_ciphers=False)
+
+with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="superadmin", admin_password=password, http_client_kwargs=dict(verify=verify)) as service:
+
+    # create an empty device list
+    devices = []
+    for i in range(10):
+        # create an in-memory device
+        hostname = f"new-test-device-{i}"
+        terminal = NewTerminal(
+            username="admin",
+            password="Cisco123",
+        )
+
+        device = NewDevice(
+            name=hostname,
+            host=f"10.0.{floor(i/254)}.{i%254+1}",
+            deviceType="IOS",
+            terminal=terminal,
+            enabled=True,
+        )
+        # add the device to the list
+        devices.append(device)
+
+    print(f"creating {len(devices)} devices")
+    result = service.create_devices(devices)
+
+    print(f"{result.success_count} devices were created")
+
+    # print failure messages
+    for r in result.results:
+        if r.__root__.success == False:
+            print(f"Could not create {r.__root__.detail['name']}")
+            print(r.__root__.message)
+            print()
+```
