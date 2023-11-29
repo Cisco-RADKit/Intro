@@ -126,7 +126,7 @@ We can create a `NewDevice` object, and attach the `NewTerminal` and `NewHTTP` o
 ```
 Finally, the device can be created:
 ```python
-    result = service.create_device(device)
+    result = service.create_device(device_ssh_rest)
 ```
 
 ## Creating multiple devices
