@@ -6,7 +6,6 @@ from math import floor
 from radkit_common.utils.ssl import create_public_ssl_context
 from radkit_service.control_api import ControlAPI
 from radkit_service.webserver.models.devices import MetaDataEntry, NewDevice, NewTerminal #, StoredDevice
-from radkit_common.utils.formatting import to_canonical_name
 
 from stopwatch import StopWatch
 
