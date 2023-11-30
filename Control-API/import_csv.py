@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from getpass import getpass
-from math import floor
 import csv
 
 from radkit_common.utils.ssl import create_public_ssl_context
