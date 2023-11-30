@@ -150,6 +150,8 @@ result = service.create_devices(device_list)
 
 # Analyzing results
 
+:warning: While we have stabilized the API for creating and modifying users or devices, the result codes and status require work, cleanup and modification. Expect changes in the result parsing in the next releases. Monitor the Release Notes as this will be advertised in "Breaking Changes".
+
 The result from `create_device()` contains several interesting elements:
 
 `result.success` is `False` if any device cannot be created:
