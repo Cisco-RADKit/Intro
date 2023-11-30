@@ -189,6 +189,8 @@ In case of failure, `success`would be false for the specific device, and the mes
 
 ## Putting it all together
 
+See `create_devices.py`and other examples in this directory.
+
 ```python
 #!/usr/bin/env python
 
