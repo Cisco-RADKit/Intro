@@ -26,9 +26,16 @@ with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="sup
     new_description = f"modified {now}"
     for i in range(len(devices)):
         devices[i].description = new_description
+        devices[i].name = "new-test-device-1"
 
     print("Sending to RADKit Service")
     stopwatch.start()
-    service.update_devices(devices)
+    result = service.update_devices(devices)
     stopwatch.stop()
     stopwatch.print_delta(f"Operation completed in ")
+
+    if result.success != True:
+        for r in result.results:
+            if r.__root__.success == False:
+                print(f"{r.__root__.detail['name']} could not be modified: {r.__root__.message}")
+                print()
