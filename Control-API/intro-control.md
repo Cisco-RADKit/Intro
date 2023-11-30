@@ -167,23 +167,25 @@ True
 When devices are created they get assigned a UUID (an internal unique identifier) by RADKit Service. The status of each device is in `result.results`which is an array with one entry per device:
 
 ```python
->>> result.results[0].root.dict()
+>>> result.results[0].__root__.dict()
 {'success': True, 'result': {'uuid': UUID('7a1c3ad9-9ff1-4faa-bcc5-815f828d62d4'), 'name': 'new-device-0', 'host': '10.0.0.1', 'deviceType': <DeviceType.IOS: 'IOS'>, 'description': '', 'labels': frozenset(), 'jumphostUuid': None, 'sourceKey': None, 'sourceDevUuid': None, 'metaData': [], 'enabled': True, 'terminal': None, 'netconf': None, 'snmp': None, 'swagger': None, 'http': None, 'forwardedTcpPorts': ''}}
->>> result.results[9].root.success
+>>> result.results[9].__root__.success
 True
->>> result.results[9].root.result.uuid
+>>> result.results[9].__root__.result.uuid
 UUID("7a1c3ad9-9ff1-4faa-bcc5-815f828d62d4")
 ```
 
 In case of failure, `success`would be false for the specific device, and the message string would contain the reason for failure of that specific device:
 ```python
->>> result.results[0].root.dict()
+>>> result.success
+False
+>>> result.results[0].__root__.dict()
 {
     "success": False,
     "message": '1 validation error for Device name "new-device-5" already exists\nname\n  Device name "new-device-5" already exists [type=value_error, input_value=\'\', input_type=str]',
     "detail": {"uuid": None, "name": "new-device-5", "host": "10.0.0.10", "deviceType": "IOS"},
 }
->>> result.results[0].root.message
+>>> result.results[0].__root__.message
 '1 validation error for Device name "new-device-0" already exists\nname\n  Device name "new-device-0" already exists [type=value_error, input_value=\'\', input_type=str]'
 ```
 
