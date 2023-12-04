@@ -1,11 +1,11 @@
 # Scripting with radkit-client
 
-`radkit-client` is a great interactive tool, but it is sometimes interesting to create reusable and standalone scripts.
+`radkit-client` is a great interactive tool, but it is sometimes interesting to create reusable scripts.
 
 There are 3 main categories of scripts:
 1. scripts to import into `radkit-client` to augment its functionalities (e.g. new functions)
 2. standalone scripts "execute-then-stop" subdivides into 2 categories
-   1. easy-to-write, easy-to-deploym scripts that only depend on RADKit (ideal for scripting)
+   1. easy-to-write, easy-to-deploy scripts that only depend on RADKit (ideal for scripting)
    2. professional code, with dependence on 3rd party libraries (ideal for proper application development)
 
 This document focuses on use cases 1 and 1.i. The use-case 1.ii will be covered in a separate document.
@@ -90,9 +90,19 @@ It is of course possible to create and import any Python module into `radkit-cli
 
 You can also import your own modules from `profile.py`.
 
+## Standalone scripting with radkit-client
+
+`radkit-client` interactive capabilities are nice, but it is sometimes useful to fully automate a task (execute a script, then return to the Command Shell).
+
+In this case, simply write your script in a file, like any normal Python script, and tell `radkit-client` to execute it. There is one example file in this directory, called `simple_client_script.py`. To execute it, just use the following syntax from your Linux/Mac shell or Windows command prompt:
+```
+> radkit-client script simple_client_script.py
+```
+You can store this command into a shell script, potentially run it from your desktop, or start it in any way you see fit.
+
 ## Deactivate Loging
 
-`radkit-client` displays details about RADKit while communicating with the RADKit Cloud or a RADKit Service. This informatin is useful to a user to be aware of possible error conditions, or congestion.
+`radkit-client` displays details about RADKit while communicating with the RADKit Cloud or a RADKit Service. This information is useful to a user to be aware of possible error conditions.
 
 In a script, these logs can be undesirable. They can be deactivated with the following 2 lines:
 
