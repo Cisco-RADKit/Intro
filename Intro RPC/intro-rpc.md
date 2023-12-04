@@ -1,4 +1,10 @@
-# Introduction to RADKit RPC API
+# Introduction to RADKit Client API
+
+The RADkit Client API (or Client API for short) is the API allowing a RADKit Client to execute commands on a RADKit Service.
+
+In this document, we will explore the Client API interactively, using `radkit-client`. `radkit-client` is a Python REPL (technically `ptpython`) in which all the critical RADKit modules have already been imported for you. This makes discovering the API much simpler. The `radkit-client` is also an extraordinary tool from which advanced Network Engineers can interact with their network at scale, without having to pull out complex developer tools.
+
+Everything that you will learn in this document is applicable to standalone scripting. Even if you are a professional developer, this section is useful because it explains all the basics of the RADKit API simply, concisely, and with examples.
 
 Start radkit-client from a shell, your Windows Start menu, Mac Launcher...
 
