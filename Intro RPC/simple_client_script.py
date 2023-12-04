@@ -25,7 +25,7 @@ linux_versions = linux.exec("cat /etc/os-release")
 ios_versions.wait()
 linux_versions.wait()
 
-ios_version_regex = re.compile("Version\s+(\S+),", flags=re.DOTALL)
+ios_version_regex = re.compile("Version\s+(\S+)", flags=re.DOTALL)
 for name, device_result in ios_versions.result.items():
   if device_result.status != ExecResultStatus.SUCCESS:
     version = "(no response from device)"
