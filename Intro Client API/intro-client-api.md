@@ -62,15 +62,15 @@ A browser window was opened to continue the authentication process. Please follo
 
 Authentication result received.
 >>>
-```python
+```
 
 If you need to display the SSO URL generated for this authentication request and copy/paste it manually into the browser you can use this command:
-```
+```python
 >>> client = sso_login("<your_cco_id@domain.com>" open_browser = False)
 ```
 
 The API `sso_login("<email address>")` initializes the connection and triggers authentication. It returns an object of type Client. In the example above, we save the return object into a variable names `client`
-```
+```python
 >>> type(client)
 <class 'radkit_client.sync.client.Client'>
 ```
