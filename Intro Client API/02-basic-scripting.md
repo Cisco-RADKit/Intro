@@ -8,7 +8,7 @@ There are 3 main categories of scripts:
    1. easy-to-write, easy-to-deploy scripts that only depend on RADKit (ideal for scripting)
    2. professional code, with dependence on 3rd party libraries (ideal for proper application development)
 
-This document focuses on use cases 1 and 1.i. The use-case 1.ii will be covered in a separate document.
+This document focuses on use cases 1 and 2.i. The use-case 2.ii will be covered in a separate document.
 
 ## Augmenting radkit-client
 
