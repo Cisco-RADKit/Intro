@@ -39,10 +39,3 @@ with ControlAPI.create(base_url="https://localhost:8081/api/v1", admin_name="sup
     stopwatch.stop()
     stopwatch.print_delta(f"Operation completed in ")
     print(f"{result.success_count} devices were created")
-
-    # print failure messages
-    for r in result.results:
-        if r.__root__.success == False:
-            print(f"Could not create {r.__root__.detail['name']}")
-            print(r.__root__.message)
-            print()
